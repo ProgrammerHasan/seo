@@ -8,7 +8,4 @@ parameters:
         - src
         - tests
 
-    ignoreErrors:
-        -
-            message: '#Trait ProgrammerHasan\\Seo\\Concerns\\HasSeo is used zero times and is not analysed\.#'
-            path: src/Concerns/HasSeo.php
+    reportUnmatchedIgnoredErrors: false
