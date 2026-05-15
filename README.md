@@ -1,7 +1,7 @@
 # programmerhasan/seo
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/programmerhasan/seo/main/art/banner.png" alt="programmerhasan/seo">
+    <img src="https://raw.githubusercontent.com/programmerhasan/seo/master/art/banner.webp" alt="programmerhasan/seo">
 </p>
 
 <p align="center">
@@ -12,11 +12,9 @@ Modern AI-Powered SEO Toolkit for Laravel, Inertia.js & Modern Web Apps.
     <a href="https://packagist.org/packages/programmerhasan/seo">
         <img src="https://img.shields.io/packagist/v/programmerhasan/seo.svg" alt="Latest Version">
     </a>
-
     <a href="https://packagist.org/packages/programmerhasan/seo">
         <img src="https://img.shields.io/packagist/dt/programmerhasan/seo.svg" alt="Downloads">
     </a>
-
     <a href="LICENSE.md">
         <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License">
     </a>
