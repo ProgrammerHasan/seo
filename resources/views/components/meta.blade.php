@@ -1,1 +1,1 @@
-{!! $html !!}
+{!! \ProgrammerHasan\Seo\Facades\Seo::toHtml() !!}
