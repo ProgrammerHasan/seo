@@ -18,9 +18,13 @@ final class HtmlRenderer
 
         $tags = [];
         $tags[] = '<title>'.$this->e($title).'</title>';
-        if ($description) $tags[] = '<meta name="description" content="'.$this->e($description).'">';
+        if ($description) {
+            $tags[] = '<meta name="description" content="'.$this->e($description).'">';
+        }
         $tags[] = '<meta name="robots" content="'.$this->e($robots).'">';
-        if ($seo->canonical) $tags[] = '<link rel="canonical" href="'.$this->e($seo->canonical).'">';
+        if ($seo->canonical) {
+            $tags[] = '<link rel="canonical" href="'.$this->e($seo->canonical).'">';
+        }
 
         foreach ($seo->meta as $name => $value) {
             if ($value !== null && $value !== '') {
@@ -34,8 +38,12 @@ final class HtmlRenderer
 
         foreach ($seo->preloads as $preload) {
             $attrs = ['as' => $preload['as']];
-            if ($preload['type']) $attrs['type'] = $preload['type'];
-            if ($preload['crossorigin']) $attrs['crossorigin'] = 'anonymous';
+            if ($preload['type']) {
+                $attrs['type'] = $preload['type'];
+            }
+            if ($preload['crossorigin']) {
+                $attrs['crossorigin'] = 'anonymous';
+            }
             $tags[] = '<link rel="preload" href="'.$this->e($preload['href']).'"'.$this->attrs($attrs).'>';
         }
 
@@ -92,6 +100,7 @@ final class HtmlRenderer
     {
         $index = $seo->index ?? (bool) config('seo.robots.index', true);
         $follow = $seo->follow ?? (bool) config('seo.robots.follow', true);
+
         return ($index ? 'index' : 'noindex').', '.($follow ? 'follow' : 'nofollow');
     }
 
@@ -105,6 +114,7 @@ final class HtmlRenderer
                 $html .= ' '.$this->e((string) $key).'="'.$this->e((string) $value).'"';
             }
         }
+
         return $html;
     }
 

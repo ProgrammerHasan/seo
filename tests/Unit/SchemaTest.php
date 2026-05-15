@@ -5,12 +5,12 @@ declare(strict_types=1);
 use ProgrammerHasan\Seo\Schema;
 
 test('it builds product schema', function () {
-    $schema = (new Schema())->product(
+    $schema = (new Schema)->product(
         name: 'SEO Toolkit',
         description: 'Laravel SEO package',
         image: 'https://example.com/product.jpg',
         sku: 'SEO-001',
-        offers: (new Schema())->offer('49', 'USD'),
+        offers: (new Schema)->offer('49', 'USD'),
     );
 
     expect($schema)
@@ -21,7 +21,7 @@ test('it builds product schema', function () {
 });
 
 test('it builds faq schema', function () {
-    $schema = (new Schema())->faq([
+    $schema = (new Schema)->faq([
         ['question' => 'What is this?', 'answer' => 'A Laravel SEO package.'],
     ]);
 

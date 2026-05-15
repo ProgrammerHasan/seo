@@ -9,6 +9,7 @@ use Illuminate\Console\Command;
 final class InstallCommand extends Command
 {
     protected $signature = 'seo:install';
+
     protected $description = 'Publish SEO configuration file';
 
     public function handle(): int
@@ -19,6 +20,7 @@ final class InstallCommand extends Command
         ]);
 
         $this->info('SEO installed successfully.');
+
         return self::SUCCESS;
     }
 }

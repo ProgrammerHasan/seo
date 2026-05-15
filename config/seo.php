@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'site_name' => env('APP_NAME', 'Laravel'),
     'default_title' => env('SEO_DEFAULT_TITLE', env('APP_NAME', 'Laravel')),

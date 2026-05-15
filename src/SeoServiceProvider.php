@@ -19,7 +19,7 @@ final class SeoServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__.'/../config/seo.php', 'seo');
 
         $this->app->singleton('seo', function () {
-            return new SeoManager(new HtmlRenderer());
+            return new SeoManager(new HtmlRenderer);
         });
     }
 

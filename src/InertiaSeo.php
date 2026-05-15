@@ -10,14 +10,20 @@ final class InertiaSeo
 {
     public function __invoke(SeoData|SeoBuilder|array $seo): array
     {
-        if ($seo instanceof SeoBuilder) return $seo->forInertia();
-        if ($seo instanceof SeoData) return $seo->toArray();
+        if ($seo instanceof SeoBuilder) {
+            return $seo->forInertia();
+        }
+        if ($seo instanceof SeoData) {
+            return $seo->toArray();
+        }
+
         return $seo;
     }
 
     public function head(SeoData|SeoBuilder|array $seo): array
     {
         $data = $this($seo);
+
         return [
             'title' => $data['title'] ?? config('seo.default_title'),
             'meta' => [
