@@ -263,6 +263,10 @@ Seo::pagination($posts);
 
 # Sitemaps
 
+This package supports dynamic sitemaps, static sitemap files, image/video/news sitemaps, model-based URLs, and sitemap indexes.
+
+Basic example:
+
 ```php
 $xml = Seo::sitemap()
     ->add('https://example.com')
@@ -303,7 +307,7 @@ Generate via command:
 ```bash
 php artisan seo:sitemap
 ```
-
+👉 Full documentation: [docs/sitemap.md](./docs/sitemap.md)
 ---
 
 # Robots.txt
@@ -412,6 +416,19 @@ composer ci
 # Documentation
 
 Full docs are available in the `docs/` directory.
+- [Installation](./docs/installation.md)
+- [Configuration](./docs/configuration.md)
+- [Basic Usage](./docs/basic-usage.md)
+- [Meta Tags](./docs/meta-tags.md)
+- [OpenGraph](./docs/open-graph.md)
+- [Twitter Cards](./docs/twitter-cards.md)
+- [JSON-LD Schema](./docs/json-ld.md)
+- [Sitemaps](./docs/sitemap.md)
+- [Robots.txt](./docs/robots.md)
+- [Inertia.js](./docs/inertia.md)
+- [AI SEO](./docs/ai.md)
+- [Blade Components](./docs/blade-components.md)
+- [Testing](./docs/testing.md)
 
 ---
 
