@@ -11,7 +11,12 @@ use ProgrammerHasan\Seo\Facades\Seo;
 
 $xml = Seo::sitemap()
     ->add('https://example.com')
-    ->add('https://example.com/about')
+    ->add(
+        loc: 'https://example.com/about',
+        lastmod: now()->toAtomString(),
+        changefreq: 'monthly',
+        priority: 0.5
+    )
     ->add('https://example.com/contact')
     ->toXml();
 ```
