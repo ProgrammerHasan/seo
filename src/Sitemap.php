@@ -4,14 +4,24 @@ declare(strict_types=1);
 
 namespace ProgrammerHasan\Seo;
 
+use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Model;
+
 final class Sitemap
 {
     private array $urls = [];
 
     private array $sitemaps = [];
 
-    public function add(string $loc, ?string $lastmod = null, ?string $changefreq = null, ?float $priority = null, array $images = [], array $videos = [], ?array $news = null): self
-    {
+    public function add(
+        string $loc,
+        ?string $lastmod = null,
+        ?string $changefreq = null,
+        ?float $priority = null,
+        array $images = [],
+        array $videos = [],
+        ?array $news = null
+    ): self {
         $this->urls[] = compact('loc', 'lastmod', 'changefreq', 'priority', 'images', 'videos', 'news');
 
         return $this;
@@ -27,10 +37,20 @@ final class Sitemap
         if (is_string($models) && class_exists($models) && method_exists($models, 'query')) {
             $models = $models::query()->get();
         }
+
+        if (is_string($models)) {
+            return $this;
+        }
+
         foreach ($models as $model) {
-            if (method_exists($model, $urlMethod)) {
-                $this->add($model->{$urlMethod}(), method_exists($model, 'getAttribute') ? optional($model->updated_at)->toAtomString() : null);
+            if (! is_object($model) || ! method_exists($model, $urlMethod)) {
+                continue;
             }
+
+            $this->add(
+                loc: (string) $model->{$urlMethod}(),
+                lastmod: $this->getModelLastModified($model),
+            );
         }
 
         return $this;
@@ -60,43 +80,61 @@ final class Sitemap
 
     public function toXml(): string
     {
-        if ($this->sitemaps) {
+        if ($this->sitemaps !== []) {
             return $this->indexXml();
         }
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>'.PHP_EOL.'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">'.PHP_EOL;
+
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>'.PHP_EOL
+            .'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+            .'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" '
+            .'xmlns:video="http://www.google.com/schemas/sitemap-video/1.1" '
+            .'xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">'.PHP_EOL;
+
         foreach ($this->urls as $url) {
-            $xml .= '  <url>'.PHP_EOL.'    <loc>'.$this->e($url['loc']).'</loc>'.PHP_EOL;
+            $xml .= '  <url>'.PHP_EOL;
+            $xml .= '    <loc>'.$this->e((string) $url['loc']).'</loc>'.PHP_EOL;
+
             foreach (['lastmod', 'changefreq', 'priority'] as $key) {
                 if ($url[$key] !== null) {
                     $xml .= '    <'.$key.'>'.$this->e((string) $url[$key]).'</'.$key.'>'.PHP_EOL;
                 }
             }
+
             foreach ($url['images'] as $image) {
-                $xml .= '    <image:image><image:loc>'.$this->e(is_array($image) ? $image['loc'] : $image).'</image:loc></image:image>'.PHP_EOL;
+                $imageLoc = is_array($image) ? (string) ($image['loc'] ?? '') : (string) $image;
+
+                if ($imageLoc === '') {
+                    continue;
+                }
+
+                $xml .= '    <image:image><image:loc>'.$this->e($imageLoc).'</image:loc></image:image>'.PHP_EOL;
             }
+
             foreach ($url['videos'] as $video) {
-                $xml .= '    <video:video><video:title>'.$this->e($video['title'] ?? '').'</video:title><video:thumbnail_loc>'.$this->e($video['thumbnail'] ?? '').'</video:thumbnail_loc></video:video>'.PHP_EOL;
+                if (! is_array($video)) {
+                    continue;
+                }
+
+                $xml .= '    <video:video>';
+                $xml .= '<video:title>'.$this->e((string) ($video['title'] ?? '')).'</video:title>';
+                $xml .= '<video:thumbnail_loc>'.$this->e((string) ($video['thumbnail'] ?? '')).'</video:thumbnail_loc>';
+                $xml .= '</video:video>'.PHP_EOL;
             }
-            if ($url['news']) {
-                $xml .= '    <news:news><news:publication><news:name>'.$this->e($url['news']['name'] ?? config('seo.site_name')).'</news:name><news:language>'.$this->e($url['news']['language'] ?? 'en').'</news:language></news:publication><news:title>'.$this->e($url['news']['title'] ?? '').'</news:title></news:news>'.PHP_EOL;
+
+            if (is_array($url['news'])) {
+                $xml .= '    <news:news>';
+                $xml .= '<news:publication>';
+                $xml .= '<news:name>'.$this->e((string) ($url['news']['name'] ?? config('seo.site_name', ''))).'</news:name>';
+                $xml .= '<news:language>'.$this->e((string) ($url['news']['language'] ?? 'en')).'</news:language>';
+                $xml .= '</news:publication>';
+                $xml .= '<news:title>'.$this->e((string) ($url['news']['title'] ?? '')).'</news:title>';
+                $xml .= '</news:news>'.PHP_EOL;
             }
+
             $xml .= '  </url>'.PHP_EOL;
         }
 
         return $xml.'</urlset>'.PHP_EOL;
-    }
-
-    private function indexXml(): string
-    {
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>'.PHP_EOL.'<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'.PHP_EOL;
-        foreach ($this->sitemaps as $sitemap) {
-            $xml .= '  <sitemap><loc>'.$this->e($sitemap['loc']).'</loc>';
-            if ($sitemap['lastmod']) {
-                $xml .= '<lastmod>'.$this->e($sitemap['lastmod']).'</lastmod>';
-            } $xml .= '</sitemap>'.PHP_EOL;
-        }
-
-        return $xml.'</sitemapindex>'.PHP_EOL;
     }
 
     public function save(string $path): bool
@@ -104,8 +142,41 @@ final class Sitemap
         return (bool) file_put_contents($path, $this->toXml());
     }
 
-    private function e(string $v): string
+    private function indexXml(): string
     {
-        return htmlspecialchars($v, ENT_XML1 | ENT_QUOTES, 'UTF-8');
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>'.PHP_EOL
+            .'<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'.PHP_EOL;
+
+        foreach ($this->sitemaps as $sitemap) {
+            $xml .= '  <sitemap><loc>'.$this->e((string) $sitemap['loc']).'</loc>';
+
+            if ($sitemap['lastmod'] !== null) {
+                $xml .= '<lastmod>'.$this->e((string) $sitemap['lastmod']).'</lastmod>';
+            }
+
+            $xml .= '</sitemap>'.PHP_EOL;
+        }
+
+        return $xml.'</sitemapindex>'.PHP_EOL;
+    }
+
+    private function getModelLastModified(object $model): ?string
+    {
+        if (! $model instanceof Model) {
+            return null;
+        }
+
+        $updatedAt = $model->getAttribute('updated_at');
+
+        if ($updatedAt instanceof CarbonInterface) {
+            return $updatedAt->toAtomString();
+        }
+
+        return $updatedAt !== null ? (string) $updatedAt : null;
+    }
+
+    private function e(string $value): string
+    {
+        return htmlspecialchars($value, ENT_XML1 | ENT_QUOTES, 'UTF-8');
     }
 }
