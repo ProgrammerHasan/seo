@@ -32,6 +32,7 @@ Modern AI-Powered SEO Toolkit for Laravel, Inertia.js & Modern Web Apps.
 - Canonical & hreflang Links
 - Inertia.js SEO Payloads
 - React/Vue SSR Helpers
+- SSR support
 - Sitemap Generator
 - Image Sitemap
 - Video Sitemap
