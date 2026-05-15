@@ -1,0 +1,15 @@
+# Documentation
+
+- [Installation](installation.md)
+- [Configuration](configuration.md)
+- [Basic Usage](basic-usage.md)
+- [Meta Tags](meta-tags.md)
+- [OpenGraph](open-graph.md)
+- [Twitter/X Cards](twitter-cards.md)
+- [JSON-LD](json-ld.md)
+- [Sitemap](sitemap.md)
+- [Robots.txt](robots.md)
+- [Inertia.js](inertia.md)
+- [AI SEO](ai.md)
+- [Blade Components](blade-components.md)
+- [Testing and Quality](testing.md)
