@@ -92,7 +92,7 @@ Render SEO tags:
 Or use the Blade component:
 
 ```blade
-<x-seo::meta />
+<x-seo />
 ```
 
 ---

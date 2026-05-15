@@ -18,5 +18,5 @@ Render tags:
 Or:
 
 ```blade
-<x-seo::meta />
+<x-seo />
 ```

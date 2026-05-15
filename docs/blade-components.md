@@ -4,7 +4,7 @@ Use the component in your main layout:
 
 ```blade
 <head>
-    <x-seo::meta />
+    <x-seo />
 </head>
 ```
 
