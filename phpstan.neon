@@ -8,4 +8,8 @@ parameters:
         - src
         - tests
 
+    excludePaths:
+        analyse:
+            - src/Concerns/HasSeo.php
+
     reportUnmatchedIgnoredErrors: false

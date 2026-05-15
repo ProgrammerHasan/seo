@@ -6,9 +6,6 @@ namespace ProgrammerHasan\Seo\Concerns;
 
 use ProgrammerHasan\Seo\Data\SeoData;
 
-/**
- * @phpstan-ignore trait.unused
- */
 trait HasSeo
 {
     public function toSeo(): SeoData
