@@ -38,7 +38,6 @@ final class SeoServiceProvider extends ServiceProvider
 
         $this->loadViewComponentsAs('seo', [Meta::class]);
 
-        // Supports: <x-seo />
         Blade::component('seo', Meta::class);
 
         if ($this->app->runningInConsole()) {
